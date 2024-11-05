@@ -15,27 +15,29 @@ import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.react.flipper.ReactNativeFlipper
 import com.facebook.soloader.SoLoader
 
-import com.tarodemo.devmanager.TaroDevManager
-import com.tarodemo.devmanager.TaroReactNativeHost
-
 class MainApplication : Application(), ReactApplication {
 
-  companion object {
-      lateinit var instance: MainApplication
-          private set
-  }
+  override val reactNativeHost: ReactNativeHost =
+      ReactNativeHostWrapper(this, object : DefaultReactNativeHost(this) {
+        override fun getPackages(): List<ReactPackage> {
+          // Packages that cannot be autolinked yet can be added manually here, for example:
+          // packages.add(new MyReactNativePackage());
+          return PackageList(this).packages
+        }
 
-  private val mTaroReactNativeHost: TaroReactNativeHost = TaroReactNativeHost(this)
-  private val mReactNativeHost: ReactNativeHost = ReactNativeHostWrapper(this, mTaroReactNativeHost)
+        override fun getJSMainModuleName(): String = "index"
 
-  override val reactNativeHost: ReactNativeHost get() = mReactNativeHost
+        override fun getUseDeveloperSupport(): Boolean = BuildConfig.DEBUG
 
-  fun getTaroReactNativeHost(): TaroReactNativeHost = mTaroReactNativeHost
+        override val isNewArchEnabled: Boolean = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED
+        override val isHermesEnabled: Boolean = BuildConfig.IS_HERMES_ENABLED
+      })
+
+  override val reactHost: ReactHost
+    get() = getDefaultReactHost(this.applicationContext, reactNativeHost)
 
   override fun onCreate() {
     super.onCreate()
-    instance = this
-    TaroDevManager.init()
     SoLoader.init(this, false)
     if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
       // If you opted-in for the New Architecture, we load the native entry point for this app.
