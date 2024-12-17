@@ -75,8 +75,8 @@ jobs:
           key: ${{ runner.os }}-gradle
           restore-keys: |
             ${{ runner.os }}-gradle
-      - name: Decode keystore
-        run: echo ${{ secrets.KEYSTORE_BASE64 }} | base64 --decode > ${{ github.workspace }}/android/app/${{ env.KEYSTORE_FILE }}    
+      #- name: Decode keystore
+      #  run: echo ${{ secrets.KEYSTORE_BASE64 }} | base64 --decode > ${{ github.workspace }}/android/app/${{ env.KEYSTORE_FILE }}    
       - name: Assemble Android ${{ env.BUILD_TYPE }}
         run: |
           sudo apt install -y ruby-bundler
